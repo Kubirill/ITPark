@@ -1271,6 +1271,16 @@ PrefabInstance:
       propertyPath: pistons.Array.data[3]
       value: 
       objectReference: {fileID: 2008452322}
+    - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
+        type: 3}
+      propertyPath: mDspeed
+      value: 36.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
+        type: 3}
+      propertyPath: seetSpeed
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40c2ac258b5f41140a3c86fd5570b1cd, type: 3}
 --- !u!1 &1514246451
