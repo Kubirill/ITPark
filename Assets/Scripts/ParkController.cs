@@ -1,20 +1,24 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+[Serializable]
 public delegate void Method(float x, float y, float z);
+[Serializable]
 public class ProgramStep
 {
-    public Method Step;
+    public String Step;
+    public Method StepDel;
     public float x;
     public float y;
     public float z;
     public float longStep;
     public ProgramStep()
     {
-        Step= Empty;
-        x=0;
+        Step= "Empty";
+        StepDel = Empty;
+        x =0;
         y=0;
         z=0;
         longStep=0;
@@ -25,6 +29,13 @@ public class ProgramStep
         
     }
 }
+[SerializeField]
+public struct num
+{
+    public string a;
+    public float b;
+}
+
 public class ParkController : MonoBehaviour
 {
     public Rotate mainDisk;
@@ -49,12 +60,14 @@ public class ParkController : MonoBehaviour
 
     public bool newChange;
     public List<ProgramStep> programs;
-    public List<Vector4> editVariable;
+    public List<ProgramStep> editVariable;
+
+    public num variab;
     // Start is called before the first frame update
     void Start()
     {
         SetSpeed();
-       
+        SetDelegate();
         StartCoroutine(ParkProgram());
     }
 
@@ -123,9 +136,34 @@ public class ParkController : MonoBehaviour
     {
         foreach (ProgramStep step in programs)
         {
-            step.Step(step.x, step.y, step.z);
+            step.StepDel(step.x, step.y, step.z);
             yield return new WaitForSeconds(step.longStep);
             StopCoroutine(ParkProgram());
+        }
+    }
+    void SetDelegate()
+    {
+        foreach (ProgramStep step in programs)
+        {
+            if (step.Step == "Change Rotate")
+            {
+                step.StepDel = ChangeRotate;
+
+
+            }
+            if (step.Step == "Change Random Rotate")
+            {
+                step.StepDel = ChangeSeets;
+            }
+            if (step.Step == "Change Piston")
+            {
+                step.StepDel = ChangePistons;
+            }
+            if (step.Step == "Activate or Diactivate Piston")
+            {
+                step.StepDel = ChangePistonsActive;
+
+            }
         }
     }
 }

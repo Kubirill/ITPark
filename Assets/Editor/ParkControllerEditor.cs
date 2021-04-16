@@ -2,106 +2,94 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System;
 
 [CustomEditor(typeof(ParkController))]
 public class ParkControllerEditor : Editor
 {
-    delegate void ComandGUI(Vector4 step);
+    [Serializable]
+    delegate void ComandGUI(ProgramStep step);
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
+        Undo.RecordObject(serializedObject.targetObject as ParkController, "Adding");
         var targetObject = serializedObject.targetObject as ParkController;
-       // base.OnInspectorGUI();
+        base.OnInspectorGUI();
+
         EditorGUILayout.LabelField("attraction programming");
-        
         EditorGUILayout.LabelField(" ");
         
-        if (targetObject.editVariable == null) targetObject.editVariable = new List<Vector4>();
-        for (int i=0;i< targetObject.editVariable.Count; i++)
+        if (targetObject.programs == null) targetObject.programs = new List<ProgramStep>();
+
+        for (int i = 0; i < targetObject.programs.Count; i++)
         {
             EditorGUILayout.LabelField("___________________________________________________________________________");
             ComandGUI comandGUI;
-            var current = targetObject.editVariable[i];
+            var current = targetObject.programs[i];
 
+            string buttonName = SetButtonBehaiborName(current.Step, targetObject, out comandGUI);
+
+            void AddMenuItemForProgram(GenericMenu menu, string menuPath, string program)
             {
-                Method now_method = targetObject.ChangeRotate;
-                // Задаю имя кнопки
-                
-                string buttonName = SetButtonBehaiborName(current.x,targetObject, out comandGUI);
-                
-                void AddMenuItemForProgram(GenericMenu menu, string menuPath, float program)
-                {
-                    // the menu item is marked as selected if it matches the current value of m_Color
-                    menu.AddItem(new GUIContent(menuPath), current.x.Equals(program), OnStepChange, program);
-                }
-                void OnStepChange(object program)
-                {
-                    current.x = (float)program;
-                    
-
-                }
-                Undo.RecordObject(targetObject, "Adding");
-                if (GUILayout.Button(buttonName))
-                {
-                    // create the menu and add items to it
-                    GenericMenu menu = new GenericMenu();
-                    Undo.RecordObject(targetObject, "Adding");
-                    // forward slashes nest menu items under submenus
-                    AddMenuItemForProgram(menu, "Change Rotate", 1);
-                    AddMenuItemForProgram(menu, "Change Random Rotate", 2);
-                    AddMenuItemForProgram(menu, "Change Piston", 3);
-                    AddMenuItemForProgram(menu, "Activate or Diactivate Piston", 4);
-
-                    // display the menu
-                    menu.ShowAsContext();
-                }
-            }//Всплывающее меню
-            if (comandGUI!=null) comandGUI(current);
-            
-            if (GUILayout.Button("Delete"))
-            {
-                Undo.RecordObject(targetObject, "Adding");
-                targetObject.editVariable.RemoveAt(i);
-                serializedObject.ApplyModifiedProperties();
+                menu.AddItem(new GUIContent(menuPath), current.Step.Equals(program), OnStepChange, program);
             }
-        }
 
+            void OnStepChange(object program)
+            {
+                current.Step = (string)program;
+            }
+
+            if (GUILayout.Button(buttonName))
+            {
+                GenericMenu menu = new GenericMenu();
+
+                AddMenuItemForProgram(menu, "Change Rotate", "Change Rotate");
+                AddMenuItemForProgram(menu, "Change Random Rotate", "Change Random Rotate");
+                AddMenuItemForProgram(menu, "Change Piston", "Change Piston");
+                AddMenuItemForProgram(menu, "Activate or Diactivate Piston", "Activate or Diactivate Piston");
+
+                menu.ShowAsContext();
+            }
+                if (comandGUI != null) comandGUI(current);
+
+                if (GUILayout.Button("Delete"))
+                {
+                    targetObject.programs.RemoveAt(i);
+                }
+            
+        }
 
         EditorGUILayout.LabelField("___________________________________________________________________________");
         
         if (GUILayout.Button("Add"))
         {
-            Undo.RecordObject(targetObject, "Adding");
             ProgramStep newStep = new ProgramStep();
-            serializedObject.ApplyModifiedProperties();
-            targetObject.editVariable.Add(Vector4.zero);
+            targetObject.programs.Add(newStep);
         }
         // 
-        Undo.RecordObject(targetObject, "Adding");
         targetObject.seetSpeed = EditorGUILayout.FloatField(targetObject.seetSpeed, GUILayout.Width(120));
         serializedObject.ApplyModifiedProperties();
-        Debug.Log(targetObject.editVariable.Count);
     }
 
 
-    string SetButtonBehaiborName(float step,ParkController park,out ComandGUI comandGUI)
+    string SetButtonBehaiborName(string step,ParkController park,out ComandGUI comandGUI)
     {
-        if (step == 1)
+        if (step == "Change Rotate")
         {
             comandGUI = WriteChangeRotateEditor;
             return "Change Rotate";
         }
-        if (step == 2)
+        if (step == "Change Random Rotate")
         {
             comandGUI = WriteChangeRandomRotateEditor;
             return "Change Random Rotate";
         }
-        if (step == 3)
+        if (step == "Change Piston")
         {
             comandGUI = WriteChangePistonEditor;
             return "Change Piston";
         }
-        if (step == 4)
+        if (step == "Activate or Diactivate Piston")
         {
             comandGUI = WriteChangePistonActivateEditor;
             return "Activate or Diactivate Piston";
@@ -110,10 +98,9 @@ public class ParkControllerEditor : Editor
         return "Select Behaivor";
     }
 
-    void WriteChangeRotateEditor(Vector4 step)
+    void WriteChangeRotateEditor(ProgramStep step)
     {
         EditorGUILayout.BeginHorizontal();
-        Undo.RecordObject(serializedObject.targetObject as ParkController, "Adding");
         EditorGUILayout.LabelField("Speed");
         step.x = EditorGUILayout.FloatField(step.x, GUILayout.Width(120));
         EditorGUILayout.EndHorizontal();
@@ -125,15 +112,14 @@ public class ParkControllerEditor : Editor
 
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Command duration");
-        step.z = EditorGUILayout.FloatField(step.z, GUILayout.Width(120));
+        step.longStep = EditorGUILayout.FloatField(step.longStep, GUILayout.Width(120));
         EditorGUILayout.EndHorizontal();
     }
-    void WriteChangeRandomRotateEditor(Vector4 step)
+    void WriteChangeRandomRotateEditor(ProgramStep step)
     {
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Speed");
-        var targetObject = serializedObject.targetObject as ParkController;
-        targetObject.seetSpeed = EditorGUILayout.FloatField(targetObject.seetSpeed, GUILayout.Width(120));
+        step.x = EditorGUILayout.FloatField(step.x, GUILayout.Width(120));
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
@@ -148,11 +134,11 @@ public class ParkControllerEditor : Editor
 
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Command duration");
-        step.w = EditorGUILayout.FloatField(step.w, GUILayout.Width(120));
+        step.longStep = EditorGUILayout.FloatField(step.longStep, GUILayout.Width(120));
         EditorGUILayout.EndHorizontal();
     }
 
-    void WriteChangePistonEditor(Vector4 step)
+    void WriteChangePistonEditor(ProgramStep step)
     {
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Max angle");
@@ -171,14 +157,14 @@ public class ParkControllerEditor : Editor
 
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Command duration");
-        step.w = EditorGUILayout.FloatField(step.w, GUILayout.Width(120));
+        step.longStep = EditorGUILayout.FloatField(step.longStep, GUILayout.Width(120));
         EditorGUILayout.EndHorizontal();
     }
-    void WriteChangePistonActivateEditor(Vector4 step)
+    void WriteChangePistonActivateEditor(ProgramStep step)
     {     
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Command duration");
-        step.w = EditorGUILayout.FloatField(step.w, GUILayout.Width(120));
+        step.longStep = EditorGUILayout.FloatField(step.longStep, GUILayout.Width(120));
         EditorGUILayout.EndHorizontal();
     }
 }
