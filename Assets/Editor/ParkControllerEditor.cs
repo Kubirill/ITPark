@@ -7,6 +7,16 @@ using System;
 [CustomEditor(typeof(ParkController))]
 public class ParkControllerEditor : Editor
 {
+    bool clickerRotate;
+    bool clickerRandomRotate;
+    bool clickerPiston;
+    bool clickerHorizontalPiston;
+
+    List<bool> namesRotate= new List<bool>();
+    List<bool> namesRandomRotate= new List<bool>();
+    List<bool> namesPiston= new List<bool>();
+    List<bool> namesHorizontalPiston = new List<bool>();
+
     [Serializable]
     delegate void ComandGUI(ProgramStep step);
     public override void OnInspectorGUI()
@@ -14,7 +24,16 @@ public class ParkControllerEditor : Editor
         serializedObject.Update();
         Undo.RecordObject(serializedObject.targetObject as ParkController, "Adding");
         var targetObject = serializedObject.targetObject as ParkController;
-        base.OnInspectorGUI();
+        //base.OnInspectorGUI();
+        RotateEditor<RotateGroups,Rotate>(targetObject.rotateGroups, ref namesRotate,ref clickerRotate );
+        RotateEditor<RandomRotateGroups,RandomRotate>(targetObject.randomRotateGroups, ref namesRandomRotate, ref clickerRandomRotate);
+        RotateEditor<PistonGroups, Piston>(targetObject.pistonGroups, ref namesPiston, ref clickerPiston);
+        RotateEditor<HorizontalPistonGroups, HorizontalPiston>(targetObject.horizontalPistonGroups, ref namesHorizontalPiston, ref clickerHorizontalPiston);
+
+
+        EditorGUILayout.Space(1f);
+
+        EditorGUILayout.Separator();
 
         EditorGUILayout.LabelField("attraction programming");
         EditorGUILayout.LabelField(" ");
@@ -166,5 +185,100 @@ public class ParkControllerEditor : Editor
         EditorGUILayout.LabelField("Command duration");
         step.longStep = EditorGUILayout.FloatField(step.longStep, GUILayout.Width(120));
         EditorGUILayout.EndHorizontal();
+    }
+
+    void RotateEditor<T,N>(List<T> targetObject, ref List<bool> namesPickers,ref bool nameClicker) where T : ParkMechanism<N>,new()
+    {
+        nameClicker = EditorGUILayout.Foldout(nameClicker, GetStringTypeName(targetObject));
+        if (nameClicker)
+        {
+            EditorGUI.indentLevel++;
+
+            for (int i = 0; i < targetObject.Count; i++)
+            {
+                if (namesPickers.Count <= i) namesPickers.Add(new bool());
+                EditorGUILayout.BeginHorizontal();
+                namesPickers[i] = EditorGUILayout.Foldout(namesPickers[i], targetObject[i].groupName);
+                if (GUILayout.Button("Delete Group", GUILayout.Width(100)))
+                {
+                    targetObject.RemoveAt(i);
+                    namesPickers.RemoveAt(i);
+                    break;
+                }
+                EditorGUILayout.EndHorizontal();
+                if (namesPickers[i])
+                {
+                    EditorGUI.indentLevel++;
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField("Group name:");
+                    targetObject[i].groupName = EditorGUILayout.TextField(targetObject[i].groupName, GUILayout.Width(120));
+                    EditorGUILayout.EndHorizontal();
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty(GetStringTypeProperty(targetObject[i]) + i + "].objects"));
+                    EditorGUI.indentLevel--;
+                }
+            }
+            if (GUILayout.Button("Add Group"))
+            {
+                T newGroup = new T();
+                newGroup.groupName = "new group" + (targetObject.Count + 1);
+                namesPickers.Add(new bool());
+                targetObject.Add(newGroup);
+            }
+            EditorGUI.indentLevel--;
+        }
+
+    }
+    string GetStringTypeProperty<T>(T type)
+    {
+        
+        RotateGroups trashRo = new RotateGroups();
+        if (type.GetType() == trashRo.GetType())
+        {
+            return "rotateGroups.Array.data[";
+        }
+
+        RandomRotateGroups trashRa = new RandomRotateGroups();
+        if (type.GetType() == trashRa.GetType())
+        {
+            return "randomRotateGroups.Array.data[";
+        }
+
+        PistonGroups trashPi = new PistonGroups();
+        if (type.GetType() == trashPi.GetType())
+        {
+            return "pistonGroups.Array.data[";
+        }
+
+        HorizontalPistonGroups trashHo = new HorizontalPistonGroups();
+        if (type.GetType() == trashHo.GetType())
+        {
+            return "horizontalPistonGroups.Array.data[";
+        }
+        return "";
+    }
+
+    string GetStringTypeName<T>(T type)
+    {
+        List<RotateGroups> trashRo = new List<RotateGroups>();
+        if (type.GetType() == trashRo.GetType())
+        {
+            return "Rotates:";
+        }
+        List<RandomRotateGroups> trashRa = new List<RandomRotateGroups>();
+        if (type.GetType() == trashRa.GetType())
+        {
+            return "Random rotates";
+        }
+        List<PistonGroups> trashPi = new List<PistonGroups>();
+        if (type.GetType() == trashPi.GetType())
+        {
+            return "Pistones:";
+        }
+        List<HorizontalPistonGroups> trashHo = new List<HorizontalPistonGroups>();
+        if (type.GetType() == trashHo.GetType())
+        {
+            return "Horizontal pistons:";
+        }
+        return "";
     }
 }

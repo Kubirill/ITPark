@@ -1212,103 +1212,38 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
         type: 3}
+      propertyPath: rotateGroups.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
+        type: 3}
       propertyPath: programs.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
-        type: 3}
-      propertyPath: programs.Array.data[0].x
-      value: 35
-      objectReference: {fileID: 0}
-    - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
-        type: 3}
-      propertyPath: programs.Array.data[0].Step
-      value: Change Piston
-      objectReference: {fileID: 0}
-    - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
-        type: 3}
-      propertyPath: programs.Array.data[1].Step
-      value: Activate or Diactivate Piston
-      objectReference: {fileID: 0}
-    - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
-        type: 3}
-      propertyPath: programs.Array.data[1].x
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
-        type: 3}
-      propertyPath: programs.Array.data[0].y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
         type: 3}
-      propertyPath: programs.Array.data[1].y
-      value: 0
+      propertyPath: rotateGroups.Array.data[0].objects.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
         type: 3}
-      propertyPath: programs.Array.data[2].Step
-      value: Activate or Diactivate Piston
+      propertyPath: randomRotateGroups.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
         type: 3}
-      propertyPath: programs.Array.data[0].longStep
-      value: 0
+      propertyPath: randomRotateGroups.Array.data[0].objects.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
         type: 3}
-      propertyPath: programs.Array.data[1].longStep
-      value: 10
+      propertyPath: rotateGroups.Array.data[0].groupName
+      value: new group1
       objectReference: {fileID: 0}
     - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
         type: 3}
-      propertyPath: programs.Array.data[2].longStep
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
-        type: 3}
-      propertyPath: programs.Array.data[3].Step
-      value: Change Rotate
-      objectReference: {fileID: 0}
-    - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
-        type: 3}
-      propertyPath: programs.Array.data[3].z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
-        type: 3}
-      propertyPath: programs.Array.data[3].x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
-        type: 3}
-      propertyPath: programs.Array.data[3].longStep
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
-        type: 3}
-      propertyPath: programs.Array.data[4].Step
-      value: Activate or Diactivate Piston
-      objectReference: {fileID: 0}
-    - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
-        type: 3}
-      propertyPath: programs.Array.data[2].x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
-        type: 3}
-      propertyPath: programs.Array.data[2].z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
-        type: 3}
-      propertyPath: programs.Array.data[1].z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8532006589547068494, guid: 40c2ac258b5f41140a3c86fd5570b1cd,
-        type: 3}
-      propertyPath: programs.Array.data[0].z
-      value: 5
+      propertyPath: randomRotateGroups.Array.data[0].groupName
+      value: new group1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40c2ac258b5f41140a3c86fd5570b1cd, type: 3}
