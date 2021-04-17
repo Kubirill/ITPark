@@ -259,6 +259,15 @@ public class ParkController : MonoBehaviour
                 step.StepDel = ChangePistonsActive;
 
             }
+            if (step.Step == "Change Horizontal Piston")
+            {
+                step.StepDel = ChangeHorizontalPistons;
+            }
+            if (step.Step == "Activate or Diactivate Horizontal Piston")
+            {
+                step.StepDel = ChangeHorizontalPistonsActive;
+
+            }
         }
     }
 }

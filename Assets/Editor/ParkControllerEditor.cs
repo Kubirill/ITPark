@@ -35,8 +35,7 @@ public class ParkControllerEditor : Editor
 
         EditorGUILayout.Separator();
 
-        EditorGUILayout.LabelField("attraction programming");
-        EditorGUILayout.LabelField(" ");
+        EditorGUILayout.LabelField("Attraction programming",GUILayout.Height(40));
         
         if (targetObject.programs == null) targetObject.programs = new List<ProgramStep>();
 
@@ -58,6 +57,17 @@ public class ParkControllerEditor : Editor
                 current.Step = (string)program;
             }
 
+            void AddMenuItemForGroup(GenericMenu menu, string menuPath, int groupNum)
+            {
+                menu.AddItem(new GUIContent(menuPath), current.num.Equals(groupNum), OnGroupChange, groupNum);
+            }
+
+            void OnGroupChange(object program)
+            {
+                current.num = (int)program;
+            }
+            EditorGUILayout.BeginHorizontal();
+
             if (GUILayout.Button(buttonName))
             {
                 GenericMenu menu = new GenericMenu();
@@ -65,11 +75,71 @@ public class ParkControllerEditor : Editor
                 AddMenuItemForProgram(menu, "Change Rotate", "Change Rotate");
                 AddMenuItemForProgram(menu, "Change Random Rotate", "Change Random Rotate");
                 AddMenuItemForProgram(menu, "Change Piston", "Change Piston");
+                AddMenuItemForProgram(menu, "Change Horizontal Piston", "Change Horizontal Piston");
                 AddMenuItemForProgram(menu, "Activate or Diactivate Piston", "Activate or Diactivate Piston");
+                AddMenuItemForProgram(menu, "Activate or Diactivate Horizontal Piston", "Activate or Diactivate Horizontal Piston");
 
                 menu.ShowAsContext();
             }
-                if (comandGUI != null) comandGUI(current);
+
+            string groupbuttonName = "<no objects>";
+            if (buttonName == "Change Rotate")
+            {
+                if (targetObject.rotateGroups.Count > 0) groupbuttonName = targetObject.rotateGroups[current.num].groupName;
+                if (GUILayout.Button(groupbuttonName))
+                {
+                    GenericMenu menu = new GenericMenu();
+                    for (int j = 0; j < targetObject.rotateGroups.Count; j++)
+                    {
+                        AddMenuItemForGroup(menu, targetObject.rotateGroups[j].groupName, j);
+                    }
+                    menu.ShowAsContext();
+                }
+            }
+            if (buttonName == "Change Random Rotate")
+            {
+                if (targetObject.randomRotateGroups.Count > 0) groupbuttonName = targetObject.randomRotateGroups[current.num].groupName;
+                if (GUILayout.Button(groupbuttonName))
+                {
+                    GenericMenu menu = new GenericMenu();
+                    for (int j = 0; j < targetObject.randomRotateGroups.Count; j++)
+                    {
+                        AddMenuItemForGroup(menu, targetObject.randomRotateGroups[j].groupName, j);
+                    }
+                    menu.ShowAsContext();
+                }
+            }
+            if ((buttonName == "Change Piston") || (buttonName == "Activate or Diactivate Piston"))
+            {
+                if (targetObject.pistonGroups.Count > 0) groupbuttonName = targetObject.pistonGroups[current.num].groupName;
+                if (GUILayout.Button(groupbuttonName))
+                {
+                    GenericMenu menu = new GenericMenu();
+                    for (int j = 0; j < targetObject.pistonGroups.Count; j++)
+                    {
+                        AddMenuItemForGroup(menu, targetObject.pistonGroups[j].groupName, j);
+                    }
+                    menu.ShowAsContext();
+                }
+            }
+            if ((buttonName == "Change Horizontal Piston") || (buttonName == "Activate or Diactivate Horizontal Piston"))
+            {
+                if (targetObject.horizontalPistonGroups.Count > 0) groupbuttonName = targetObject.horizontalPistonGroups[current.num].groupName;
+                if (GUILayout.Button(groupbuttonName))
+                {
+                    GenericMenu menu = new GenericMenu();
+                    for (int j = 0; j < targetObject.horizontalPistonGroups.Count; j++)
+                    {
+                        AddMenuItemForGroup(menu, targetObject.horizontalPistonGroups[j].groupName, j);
+                    }
+                    menu.ShowAsContext();
+                }
+            }
+
+
+
+            EditorGUILayout.EndHorizontal();
+            if (comandGUI != null) comandGUI(current);
 
                 if (GUILayout.Button("Delete"))
                 {
@@ -281,4 +351,13 @@ public class ParkControllerEditor : Editor
         }
         return "";
     }
+
+    void CallGUINamesGroup(string comandName,ParkController targetObject)
+    {
+       
+    }
+       
+
+
+
 }
