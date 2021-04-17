@@ -11,6 +11,7 @@ public class ParkControllerEditor : Editor
     bool clickerRandomRotate;
     bool clickerPiston;
     bool clickerHorizontalPiston;
+    bool programmingButton;
 
     List<bool> namesRotate= new List<bool>();
     List<bool> namesRandomRotate= new List<bool>();
@@ -35,128 +36,131 @@ public class ParkControllerEditor : Editor
 
         EditorGUILayout.Separator();
 
-        EditorGUILayout.LabelField("Attraction programming",GUILayout.Height(40));
         
-        if (targetObject.programs == null) targetObject.programs = new List<ProgramStep>();
-
-        for (int i = 0; i < targetObject.programs.Count; i++)
+        programmingButton = EditorGUILayout.Foldout(programmingButton," Attraction programming");
+        if (programmingButton)
         {
-            EditorGUILayout.LabelField("___________________________________________________________________________");
-            ComandGUI comandGUI;
-            var current = targetObject.programs[i];
+            if (targetObject.programs == null) targetObject.programs = new List<ProgramStep>();
 
-            string buttonName = SetButtonBehaiborName(current.Step, targetObject, out comandGUI);
-
-            void AddMenuItemForProgram(GenericMenu menu, string menuPath, string program)
+            for (int i = 0; i < targetObject.programs.Count; i++)
             {
-                menu.AddItem(new GUIContent(menuPath), current.Step.Equals(program), OnStepChange, program);
-            }
+                EditorGUILayout.LabelField("___________________________________________________________________________");
+                ComandGUI comandGUI;
+                var current = targetObject.programs[i];
 
-            void OnStepChange(object program)
-            {
-                current.Step = (string)program;
-            }
+                string buttonName = SetButtonBehaiborName(current.Step, targetObject, out comandGUI);
 
-            void AddMenuItemForGroup(GenericMenu menu, string menuPath, int groupNum)
-            {
-                menu.AddItem(new GUIContent(menuPath), current.num.Equals(groupNum), OnGroupChange, groupNum);
-            }
+                void AddMenuItemForProgram(GenericMenu menu, string menuPath, string program)
+                {
+                    menu.AddItem(new GUIContent(menuPath), current.Step.Equals(program), OnStepChange, program);
+                }
 
-            void OnGroupChange(object program)
-            {
-                current.num = (int)program;
-            }
-            EditorGUILayout.BeginHorizontal();
+                void OnStepChange(object program)
+                {
+                    current.Step = (string)program;
+                }
 
-            if (GUILayout.Button(buttonName))
-            {
-                GenericMenu menu = new GenericMenu();
+                void AddMenuItemForGroup(GenericMenu menu, string menuPath, int groupNum)
+                {
+                    menu.AddItem(new GUIContent(menuPath), current.num.Equals(groupNum), OnGroupChange, groupNum);
+                }
 
-                AddMenuItemForProgram(menu, "Change Rotate", "Change Rotate");
-                AddMenuItemForProgram(menu, "Change Random Rotate", "Change Random Rotate");
-                AddMenuItemForProgram(menu, "Change Piston", "Change Piston");
-                AddMenuItemForProgram(menu, "Change Horizontal Piston", "Change Horizontal Piston");
-                AddMenuItemForProgram(menu, "Activate or Diactivate Piston", "Activate or Diactivate Piston");
-                AddMenuItemForProgram(menu, "Activate or Diactivate Horizontal Piston", "Activate or Diactivate Horizontal Piston");
+                void OnGroupChange(object program)
+                {
+                    current.num = (int)program;
+                }
+                EditorGUILayout.BeginHorizontal();
 
-                menu.ShowAsContext();
-            }
-
-            string groupbuttonName = "<no objects>";
-            if (buttonName == "Change Rotate")
-            {
-                if (targetObject.rotateGroups.Count > 0) groupbuttonName = targetObject.rotateGroups[current.num].groupName;
-                if (GUILayout.Button(groupbuttonName))
+                if (GUILayout.Button(buttonName, GUILayout.MinWidth(200)))
                 {
                     GenericMenu menu = new GenericMenu();
-                    for (int j = 0; j < targetObject.rotateGroups.Count; j++)
-                    {
-                        AddMenuItemForGroup(menu, targetObject.rotateGroups[j].groupName, j);
-                    }
+
+                    AddMenuItemForProgram(menu, "Change Rotate", "Change Rotate");
+                    AddMenuItemForProgram(menu, "Change Random Rotate", "Change Random Rotate");
+                    AddMenuItemForProgram(menu, "Change Piston", "Change Piston");
+                    AddMenuItemForProgram(menu, "Change Horizontal Piston", "Change Horizontal Piston");
+                    AddMenuItemForProgram(menu, "Activate or Diactivate Piston", "Activate or Diactivate Piston");
+                    AddMenuItemForProgram(menu, "Activate or Diactivate Horizontal Piston", "Activate or Diactivate Horizontal Piston");
+
                     menu.ShowAsContext();
                 }
-            }
-            if (buttonName == "Change Random Rotate")
-            {
-                if (targetObject.randomRotateGroups.Count > 0) groupbuttonName = targetObject.randomRotateGroups[current.num].groupName;
-                if (GUILayout.Button(groupbuttonName))
+
+                string groupbuttonName = "<no objects>";
+                if (buttonName == "Change Rotate")
                 {
-                    GenericMenu menu = new GenericMenu();
-                    for (int j = 0; j < targetObject.randomRotateGroups.Count; j++)
+                    if (targetObject.rotateGroups.Count > 0) groupbuttonName = targetObject.rotateGroups[current.num].groupName;
+                    if (GUILayout.Button(groupbuttonName, GUILayout.MinWidth(120)))
                     {
-                        AddMenuItemForGroup(menu, targetObject.randomRotateGroups[j].groupName, j);
+                        GenericMenu menu = new GenericMenu();
+                        for (int j = 0; j < targetObject.rotateGroups.Count; j++)
+                        {
+                            AddMenuItemForGroup(menu, targetObject.rotateGroups[j].groupName, j);
+                        }
+                        menu.ShowAsContext();
                     }
-                    menu.ShowAsContext();
                 }
-            }
-            if ((buttonName == "Change Piston") || (buttonName == "Activate or Diactivate Piston"))
-            {
-                if (targetObject.pistonGroups.Count > 0) groupbuttonName = targetObject.pistonGroups[current.num].groupName;
-                if (GUILayout.Button(groupbuttonName))
+                if (buttonName == "Change Random Rotate")
                 {
-                    GenericMenu menu = new GenericMenu();
-                    for (int j = 0; j < targetObject.pistonGroups.Count; j++)
+                    if (targetObject.randomRotateGroups.Count > 0) groupbuttonName = targetObject.randomRotateGroups[current.num].groupName;
+                    if (GUILayout.Button(groupbuttonName, GUILayout.MinWidth(120)))
                     {
-                        AddMenuItemForGroup(menu, targetObject.pistonGroups[j].groupName, j);
+                        GenericMenu menu = new GenericMenu();
+                        for (int j = 0; j < targetObject.randomRotateGroups.Count; j++)
+                        {
+                            AddMenuItemForGroup(menu, targetObject.randomRotateGroups[j].groupName, j);
+                        }
+                        menu.ShowAsContext();
                     }
-                    menu.ShowAsContext();
                 }
-            }
-            if ((buttonName == "Change Horizontal Piston") || (buttonName == "Activate or Diactivate Horizontal Piston"))
-            {
-                if (targetObject.horizontalPistonGroups.Count > 0) groupbuttonName = targetObject.horizontalPistonGroups[current.num].groupName;
-                if (GUILayout.Button(groupbuttonName))
+                if ((buttonName == "Change Piston") || (buttonName == "Activate or Diactivate Piston"))
                 {
-                    GenericMenu menu = new GenericMenu();
-                    for (int j = 0; j < targetObject.horizontalPistonGroups.Count; j++)
+                    if (targetObject.pistonGroups.Count > 0) groupbuttonName = targetObject.pistonGroups[current.num].groupName;
+                    if (GUILayout.Button(groupbuttonName, GUILayout.MinWidth(120)))
                     {
-                        AddMenuItemForGroup(menu, targetObject.horizontalPistonGroups[j].groupName, j);
+                        GenericMenu menu = new GenericMenu();
+                        for (int j = 0; j < targetObject.pistonGroups.Count; j++)
+                        {
+                            AddMenuItemForGroup(menu, targetObject.pistonGroups[j].groupName, j);
+                        }
+                        menu.ShowAsContext();
                     }
-                    menu.ShowAsContext();
                 }
-            }
+                if ((buttonName == "Change Horizontal Piston") || (buttonName == "Activate or Diactivate Horizontal Piston"))
+                {
+                    if (targetObject.horizontalPistonGroups.Count > 0) groupbuttonName = targetObject.horizontalPistonGroups[current.num].groupName;
+                    if (GUILayout.Button(groupbuttonName, GUILayout.MinWidth(120)))
+                    {
+                        GenericMenu menu = new GenericMenu();
+                        for (int j = 0; j < targetObject.horizontalPistonGroups.Count; j++)
+                        {
+                            AddMenuItemForGroup(menu, targetObject.horizontalPistonGroups[j].groupName, j);
+                        }
+                        menu.ShowAsContext();
+                    }
+                }
 
 
 
-            EditorGUILayout.EndHorizontal();
-            if (comandGUI != null) comandGUI(current);
+                EditorGUILayout.EndHorizontal();
+                if (comandGUI != null) comandGUI(current);
 
                 if (GUILayout.Button("Delete"))
                 {
                     targetObject.programs.RemoveAt(i);
                 }
-            
-        }
 
-        EditorGUILayout.LabelField("___________________________________________________________________________");
-        
-        if (GUILayout.Button("Add"))
-        {
-            ProgramStep newStep = new ProgramStep();
-            targetObject.programs.Add(newStep);
+            }
+
+            EditorGUILayout.LabelField("___________________________________________________________________________");
+
+            if (GUILayout.Button("Add"))
+            {
+                ProgramStep newStep = new ProgramStep();
+                targetObject.programs.Add(newStep);
+            }
         }
-        // 
-        targetObject.seetSpeed = EditorGUILayout.FloatField(targetObject.seetSpeed, GUILayout.Width(120));
+        
+        
         serializedObject.ApplyModifiedProperties();
     }
 
@@ -182,6 +186,16 @@ public class ParkControllerEditor : Editor
         {
             comandGUI = WriteChangePistonActivateEditor;
             return "Activate or Diactivate Piston";
+        }
+        if (step == "Change Horizontal Piston")
+        {
+            comandGUI = WriteChangeHorizontalPistonEditor;
+            return "Change Horizontal Piston";
+        }
+        if (step == "Activate or Diactivate Horizontal Piston")
+        {
+            comandGUI = WriteChangeHorizontalPistonActivateEditor;
+            return "Activate or Diactivate Horizontal Piston";
         }
         comandGUI = default;
         return "Select Behaivor";
@@ -251,6 +265,36 @@ public class ParkControllerEditor : Editor
     }
     void WriteChangePistonActivateEditor(ProgramStep step)
     {     
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Command duration");
+        step.longStep = EditorGUILayout.FloatField(step.longStep, GUILayout.Width(120));
+        EditorGUILayout.EndHorizontal();
+    }
+
+    void WriteChangeHorizontalPistonEditor(ProgramStep step)
+    {
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Max distance");
+        step.x = EditorGUILayout.FloatField(step.x, GUILayout.Width(120));
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Min distance");
+        step.y = EditorGUILayout.FloatField(step.y, GUILayout.Width(120));
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Speed");
+        step.z = EditorGUILayout.FloatField(step.z, GUILayout.Width(120));
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Command duration");
+        step.longStep = EditorGUILayout.FloatField(step.longStep, GUILayout.Width(120));
+        EditorGUILayout.EndHorizontal();
+    }
+    void WriteChangeHorizontalPistonActivateEditor(ProgramStep step)
+    {
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Command duration");
         step.longStep = EditorGUILayout.FloatField(step.longStep, GUILayout.Width(120));
