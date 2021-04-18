@@ -5,7 +5,7 @@ using UnityEngine;
 
 
 [Serializable]
-public delegate void Method(int num,float x, float y, float z);
+public delegate void Method(int num,float x, float y, float z, bool change);
 [Serializable]
 public class ProgramStep
 {
@@ -15,6 +15,7 @@ public class ProgramStep
     public float x;
     public float y;
     public float z;
+    public bool change;
     public float longStep;
     public ProgramStep()
     {
@@ -23,10 +24,11 @@ public class ProgramStep
         x =0;
         y=0;
         z=0;
-        longStep=0;
+        change = false;
+        longStep =0;
     }
     
-    public void Empty(int num, float empty, float empty1, float empty2)
+    public void Empty(int num, float empty, float empty1, float empty2,bool change)
     {
         
     }
@@ -35,6 +37,7 @@ public class ProgramStep
 public class ParkMechanism <T>
 {
     public string groupName;
+    public bool active = false;
     public float speed;
     public T[] objects;
 }
@@ -49,7 +52,8 @@ public class RotateGroups: ParkMechanism<Rotate>
         foreach (var rotObject in objects)
         {
             rotObject.maxSpeed = speed;
-            rotObject.accelerate = speed;
+            rotObject.accelerate = accel;
+            rotObject.active = active;
         }
     }
 }
@@ -66,8 +70,9 @@ public class RandomRotateGroups : ParkMechanism<RandomRotate>
         foreach (var rotObject in objects)
         {
             rotObject.maxSpeed = speed;
-            rotObject.accelerate = speed;
+            rotObject.accelerate = accel;
             rotObject.midleWaitTime = wait;
+            rotObject.active = active;
         }
     }
 }
@@ -78,7 +83,7 @@ public class PistonGroups : ParkMechanism<Piston>
     
     public float maxAngle;
     public float minAngle;
-    public bool active = false;
+    
 
     public void SetChanges()
     {
@@ -98,7 +103,6 @@ public class HorizontalPistonGroups : ParkMechanism<HorizontalPiston>
     
     public float minDistance;
     public float maxDistance;
-    public bool active;
 
     public void SetChanges()
     {
@@ -120,35 +124,12 @@ public class ParkController : MonoBehaviour
     public List<PistonGroups> pistonGroups;
     public List<HorizontalPistonGroups> horizontalPistonGroups;
 
-    //
-
-    public Rotate mainDisk;
-    public float mDspeed;
-    public float mDaccel;
-
-    public Piston[] pistons;
-    public float maxAngle;
-    public float minAngle;
-    public float speedPiston;
-    public bool pistonActive = false;
-
-    public Rotate[] xPanels;
-    public float xPspeed;
-    public float xPaccel;
-
-
-    public RandomRotate[] seets;
-    public float seetSpeed;
-    public float seetAccel;
-    public float seetWait;
-    //
-    public bool newChange;
     public List<ProgramStep> programs;
 
     // Start is called before the first frame update
     void Start()
     {
-        SetSpeed();
+        
         SetDelegate();
         StartCoroutine(ParkProgram());
     }
@@ -156,56 +137,32 @@ public class ParkController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (newChange)
-        {
-            newChange = false;
-            SetSpeed();
-        }
+        
     }
-    void SetSpeed()
-    {
-        mainDisk.accelerate = mDaccel;
-        mainDisk.maxSpeed = mDspeed;
+    
 
-        foreach (Piston piston in pistons)
-        {
-            piston.maxAngle = maxAngle;
-            piston.minAngle = minAngle;
-            piston.speed = speedPiston;
-            piston.active = pistonActive;
-        }
-
-        foreach (Rotate panel in xPanels)
-        {
-            panel.accelerate = xPaccel;
-            panel.maxSpeed = xPspeed;
-        }
-        foreach (RandomRotate seet in seets)
-        {
-            seet.accelerate = seetAccel;
-            seet.maxSpeed = seetSpeed;
-            seet.midleWaitTime = seetWait;
-        }
-    }
-
-    public void ChangeRotate(int numberGroup,float speed,float accel,float empty)
+    public void ChangeRotate(int numberGroup,float speed,float accel,float empty,bool changeActive)
     {
         rotateGroups[numberGroup].speed = speed;
         rotateGroups[numberGroup].accel = accel;
-        rotateGroups[numberGroup].SetChanges();
+        if (changeActive) rotateGroups[numberGroup].active = !rotateGroups[numberGroup].active;
+       rotateGroups[numberGroup].SetChanges();
+        
     }
-    public void ChangeSeets(int numberGroup, float speed, float accel, float wait)
+    public void ChangeSeets(int numberGroup, float speed, float accel, float wait, bool changeActive)
     {
         randomRotateGroups[numberGroup].speed = speed;
         randomRotateGroups[numberGroup].accel = accel;
         randomRotateGroups[numberGroup].wait = wait;
+        if (changeActive) randomRotateGroups[numberGroup].active = !randomRotateGroups[numberGroup].active;
         randomRotateGroups[numberGroup].SetChanges();
     }
-    public void ChangePistons(int numberGroup, float BigAngl, float LitAngl, float speed)
+    public void ChangePistons(int numberGroup, float BigAngl, float LitAngl, float speed, bool changeActive)
     {
         pistonGroups[numberGroup].maxAngle = BigAngl;
         pistonGroups[numberGroup].minAngle = LitAngl;
         pistonGroups[numberGroup].speed = speed;
+        if (changeActive) pistonGroups[numberGroup].active = !pistonGroups[numberGroup].active;
         pistonGroups[numberGroup].SetChanges();
     }
     public void ChangePistonsActive(int numberGroup, float empty, float empty1, float empty2)
@@ -214,11 +171,12 @@ public class ParkController : MonoBehaviour
         pistonGroups[numberGroup].SetChanges();
     }
 
-    public void ChangeHorizontalPistons(int numberGroup, float maxDistance, float minDistance, float speed)
+    public void ChangeHorizontalPistons(int numberGroup, float maxDistance, float minDistance, float speed, bool changeActive)
     {
         horizontalPistonGroups[numberGroup].maxDistance = maxDistance;
         horizontalPistonGroups[numberGroup].minDistance = minDistance;
         horizontalPistonGroups[numberGroup].speed = speed;
+        if (changeActive) horizontalPistonGroups[numberGroup].active = !horizontalPistonGroups[numberGroup].active;
         horizontalPistonGroups[numberGroup].SetChanges();
     }
     public void ChangeHorizontalPistonsActive(int numberGroup, float empty, float empty1, float empty2)
@@ -231,7 +189,7 @@ public class ParkController : MonoBehaviour
     {
         foreach (ProgramStep step in programs)
         {
-            step.StepDel(step.num, step.x, step.y, step.z);
+            step.StepDel(step.num, step.x, step.y, step.z,step.change);
             yield return new WaitForSeconds(step.longStep);
             StopCoroutine(ParkProgram());
         }
@@ -256,7 +214,7 @@ public class ParkController : MonoBehaviour
             }
             if (step.Step == "Activate or Diactivate Piston")
             {
-                step.StepDel = ChangePistonsActive;
+                //step.StepDel = ChangePistonsActive;
 
             }
             if (step.Step == "Change Horizontal Piston")
@@ -265,7 +223,7 @@ public class ParkController : MonoBehaviour
             }
             if (step.Step == "Activate or Diactivate Horizontal Piston")
             {
-                step.StepDel = ChangeHorizontalPistonsActive;
+                //step.StepDel = ChangeHorizontalPistonsActive;
 
             }
         }

@@ -79,8 +79,8 @@ public class ParkControllerEditor : Editor
                     AddMenuItemForProgram(menu, "Change Random Rotate", "Change Random Rotate");
                     AddMenuItemForProgram(menu, "Change Piston", "Change Piston");
                     AddMenuItemForProgram(menu, "Change Horizontal Piston", "Change Horizontal Piston");
-                    AddMenuItemForProgram(menu, "Activate or Diactivate Piston", "Activate or Diactivate Piston");
-                    AddMenuItemForProgram(menu, "Activate or Diactivate Horizontal Piston", "Activate or Diactivate Horizontal Piston");
+                    //AddMenuItemForProgram(menu, "Activate or Diactivate Piston", "Activate or Diactivate Piston");
+                    //AddMenuItemForProgram(menu, "Activate or Diactivate Horizontal Piston", "Activate or Diactivate Horizontal Piston");
 
                     menu.ShowAsContext();
                 }
@@ -214,6 +214,11 @@ public class ParkControllerEditor : Editor
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Switch active?");
+        step.change = EditorGUILayout.Toggle(step.change, GUILayout.Width(120));
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Command duration");
         step.longStep = EditorGUILayout.FloatField(step.longStep, GUILayout.Width(120));
         EditorGUILayout.EndHorizontal();
@@ -233,6 +238,11 @@ public class ParkControllerEditor : Editor
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Waiting to change rotate (sec)");
         step.z = EditorGUILayout.FloatField(step.z, GUILayout.Width(120));
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Switch active?");
+        step.change = EditorGUILayout.Toggle(step.change, GUILayout.Width(120));
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
@@ -257,6 +267,12 @@ public class ParkControllerEditor : Editor
         EditorGUILayout.LabelField("Speed");
         step.z = EditorGUILayout.FloatField(step.z, GUILayout.Width(120));
         EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Switch active?");
+        step.change = EditorGUILayout.Toggle(step.change, GUILayout.Width(120));
+        EditorGUILayout.EndHorizontal();
+
 
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Command duration");
@@ -287,6 +303,12 @@ public class ParkControllerEditor : Editor
         EditorGUILayout.LabelField("Speed");
         step.z = EditorGUILayout.FloatField(step.z, GUILayout.Width(120));
         EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Switch active?");
+        step.change = EditorGUILayout.Toggle(step.change, GUILayout.Width(120));
+        EditorGUILayout.EndHorizontal();
+
 
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Command duration");
